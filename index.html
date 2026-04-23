@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gestão de Clientes</title>
+  <title>Central de Clientes</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -12,7 +12,7 @@
       --bg: #0a0a0f;
       --surface: #13131a;
       --border: #1e1e2e;
-      --accent: #16a34a;
+      --accent: #0284c7;
       --accent-glow: rgba(124, 92, 252, 0.35);
       --text: #e8e8f0;
       --muted: #6b6b80;
@@ -38,7 +38,7 @@
     }
     body::before {
       width: 500px; height: 500px;
-      background: rgba(22, 163, 74, 0.12);
+      background: rgba(2, 132, 199, 0.12);
       top: -100px; left: -100px;
     }
     body::after {
@@ -125,7 +125,7 @@
       color: #fff;
     }
     h1 span {
-      background: linear-gradient(135deg, #16a34a, #4ade80);
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -181,20 +181,20 @@
       letter-spacing: 0.02em;
       cursor: pointer;
       transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-      box-shadow: 0 4px 20px rgba(22, 163, 74, 0.35);
+      box-shadow: 0 4px 20px rgba(2, 132, 199, 0.35);
     }
     .btn-primary:hover {
       opacity: 0.92;
       transform: translateY(-1px);
-      box-shadow: 0 8px 28px rgba(22, 163, 74, 0.45);
+      box-shadow: 0 8px 28px rgba(2, 132, 199, 0.45);
     }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
     .btn-logout {
-      background: rgba(22, 163, 74, 0.15);
-      border: 1px solid rgba(22, 163, 74, 0.4);
+      background: rgba(2, 132, 199, 0.15);
+      border: 1px solid rgba(2, 132, 199, 0.4);
       border-radius: 8px;
-      color: #4ade80;
+      color: #38bdf8;
       font-family: 'DM Sans', sans-serif;
       font-size: 0.85rem;
       font-weight: 500;
@@ -246,9 +246,9 @@
     /* ── TABELA ── */
     .counter {
       display: none;
-      background: rgba(22, 163, 74, 0.12);
-      border: 1px solid rgba(22, 163, 74, 0.3);
-      color: #4ade80;
+      background: rgba(2, 132, 199, 0.12);
+      border: 1px solid rgba(2, 132, 199, 0.3);
+      color: #38bdf8;
       font-size: 0.78rem;
       font-weight: 500;
       letter-spacing: 0.06em;
@@ -298,9 +298,9 @@
     .avatar {
       width: 30px; height: 30px;
       border-radius: 50%;
-      background: rgba(22, 163, 74, 0.15);
-      border: 1px solid rgba(22, 163, 74, 0.3);
-      color: #4ade80;
+      background: rgba(2, 132, 199, 0.15);
+      border: 1px solid rgba(2, 132, 199, 0.3);
+      color: #38bdf8;
       font-size: 0.78rem;
       font-weight: 600;
       display: flex;
@@ -361,7 +361,7 @@
   <div class="tela" id="tela-login">
     <div class="login-card">
       <div class="login-header">
-        <h1>Gestão de <span>Clientes</span></h1>
+        <h1>Central de <span>Clientes</span></h1>
         <p class="subtitle">Faça login para acessar a lista de clientes.</p>
       </div>
 
