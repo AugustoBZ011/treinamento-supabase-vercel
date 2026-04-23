@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Área Restrita</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --border: #1e1e2e;
+      --accent: #7c5cfc;
+      --accent-glow: rgba(124, 92, 252, 0.35);
+      --text: #e8e8f0;
+      --muted: #6b6b80;
+      --success: #22c55e;
+      --error: #f43f5e;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::before {
+      width: 500px; height: 500px;
+      background: rgba(124, 92, 252, 0.12);
+      top: -100px; left: -100px;
+    }
+    body::after {
+      width: 400px; height: 400px;
+      background: rgba(56, 189, 248, 0.08);
+      bottom: -80px; right: -80px;
+    }
+
+    /* ── TELAS ── */
+    .tela {
+      display: none;
+      position: relative;
+      z-index: 1;
+    }
+    .tela.ativa { display: flex; }
+
+    /* ── TELA LOGIN ── */
+    #tela-login {
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem 2.5rem 2rem;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 40px 80px rgba(0,0,0,0.5);
+    }
+
+    .login-header { margin-bottom: 2rem; }
+
+    /* ── TELA LISTA ── */
+    #tela-lista {
+      min-height: 100vh;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 3rem 2rem;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .lista-container {
+      width: 100%;
+      max-width: 780px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.8rem;
+      gap: 1rem;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .user-email {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    /* ── TIPOGRAFIA COMPARTILHADA ── */
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #fff;
+    }
+    h1 span {
+      background: linear-gradient(135deg, #7c5cfc, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      margin-top: 0.5rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    /* ── FORMULÁRIO ── */
+    .form-group { margin-bottom: 1.2rem; }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 0.4rem;
+    }
+
+    input {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input::placeholder { color: var(--muted); }
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    /* ── BOTÕES ── */
+    .btn-primary {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.85rem;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(124, 92, 252, 0.35);
+    }
+    .btn-primary:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px rgba(124, 92, 252, 0.45);
+    }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-logout {
+      background: rgba(124, 92, 252, 0.15);
+      border: 1px solid rgba(124, 92, 252, 0.4);
+      border-radius: 8px;
+      color: #a78bfa;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 7px 18px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    .btn-logout:hover {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: rgba(244, 63, 94, 0.4);
+      color: #f43f5e;
+    }
+
+    .btn-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── TOAST ── */
+    .toast {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+    .toast.error {
+      background: rgba(244, 63, 94, 0.1);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      color: var(--error);
+    }
+
+    /* ── TABELA ── */
+    .counter {
+      display: none;
+      background: rgba(124, 92, 252, 0.12);
+      border: 1px solid rgba(124, 92, 252, 0.3);
+      color: #a78bfa;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      padding: 5px 14px;
+      border-radius: 100px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 40px 80px rgba(0,0,0,0.5);
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    thead tr {
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      text-align: left;
+      padding: 0.85rem 1.2rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    td {
+      padding: 0.9rem 1.2rem;
+      font-size: 0.88rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr { transition: background 0.15s; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+    .name-cell { display: flex; align-items: center; gap: 10px; }
+
+    .avatar {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: rgba(124, 92, 252, 0.15);
+      border: 1px solid rgba(124, 92, 252, 0.3);
+      color: #a78bfa;
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: 'Syne', sans-serif;
+    }
+
+    .email-cell { color: var(--muted); font-size: 0.84rem; }
+    .date-cell  { color: var(--muted); font-size: 0.82rem; white-space: nowrap; }
+
+    .empty-state {
+      padding: 3.5rem 2rem;
+      text-align: center;
+      color: var(--muted);
+    }
+    .empty-icon { font-size: 2rem; margin-bottom: 0.8rem; opacity: 0.4; }
+    .empty-state p { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 600; }
+
+    .skel {
+      height: 13px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #1e1e2e 25%, #252535 50%, #1e1e2e 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .skel.w-40 { width: 40%; }
+    .skel.w-55 { width: 55%; }
+    .skel.w-30 { width: 30%; }
+    .skel.w-45 { width: 45%; }
+
+    .error-state {
+      padding: 2rem;
+      text-align: center;
+      color: #f43f5e;
+      font-size: 0.88rem;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes rowIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ TELA LOGIN ═══ -->
+  <div class="tela" id="tela-login">
+    <div class="login-card">
+      <div class="login-header">
+        <h1>Área <span>Restrita</span></h1>
+        <p class="subtitle">Faça login para acessar a lista de clientes.</p>
+      </div>
+
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" placeholder="seu@email.com" autocomplete="off"/>
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" placeholder="••••••••"/>
+      </div>
+
+      <button class="btn-primary" id="btn-login">
+        <span class="btn-inner">
+          <span class="spinner" id="spinner-login"></span>
+          <span id="btn-login-text">Entrar</span>
+        </span>
+      </button>
+
+      <div class="toast error" id="toast-login">
+        <span>✕</span>
+        <span id="toast-login-msg"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TELA LISTA ═══ -->
+  <div class="tela" id="tela-lista">
+    <div class="lista-container">
+      <div class="topbar">
+        <div class="topbar-left">
+          <h1>Lista de <span>Clientes</span></h1>
+          <div class="counter" id="counter"></div>
+        </div>
+        <div class="topbar-right">
+          <span class="user-email" id="user-email"></span>
+          <button class="btn-logout" id="btn-logout">Sair</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Telefone</th>
+              <th>Data de cadastro</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-body">
+            <tr><td><div class="skel w-40"></div></td><td><div class="skel w-55"></div></td><td><div class="skel w-30"></div></td><td><div class="skel w-45"></div></td></tr>
+            <tr><td><div class="skel w-55"></div></td><td><div class="skel w-40"></div></td><td><div class="skel w-30"></div></td><td><div class="skel w-45"></div></td></tr>
+            <tr><td><div class="skel w-30"></div></td><td><div class="skel w-55"></div></td><td><div class="skel w-40"></div></td><td><div class="skel w-45"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://wztyvweydpqfgaevtxuo.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6dHl2d2V5ZHBxZmdhZXZ0eHVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzMDUwNjcsImV4cCI6MjA5MTg4MTA2N30.kw7KrALdGIUiYzDkUYsGDCJhGQt2KrtWVZekPlMjtUM';
+
+    // ── Navegação entre telas ──
+    function mostrarTela(id) {
+      document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+      const tela = document.getElementById(id);
+      tela.classList.add('ativa');
+      // Reinicia animação
+      tela.style.animation = 'none';
+      tela.offsetHeight;
+      tela.style.animation = '';
+    }
+
+    // ── Verificar sessão ao carregar ──
+    const token = sessionStorage.getItem('sb_access_token');
+    if (token) {
+      mostrarTela('tela-lista');
+      const user = JSON.parse(sessionStorage.getItem('sb_user') || '{}');
+      document.getElementById('user-email').textContent = user.email || '';
+      carregarClientes(token);
+    } else {
+      mostrarTela('tela-login');
+    }
+
+    // ── LOGIN ──
+    document.getElementById('btn-login').addEventListener('click', async () => {
+      const email  = document.getElementById('email').value.trim();
+      const senha  = document.getElementById('senha').value;
+      const btn    = document.getElementById('btn-login');
+      const texto  = document.getElementById('btn-login-text');
+      const spin   = document.getElementById('spinner-login');
+      const toast  = document.getElementById('toast-login');
+      const toastMsg = document.getElementById('toast-login-msg');
+
+      if (!email || !senha) {
+        toastMsg.textContent = 'Preencha e-mail e senha.';
+        toast.style.display = 'flex';
+        return;
+      }
+
+      btn.disabled = true;
+      spin.style.display = 'block';
+      texto.textContent = 'Entrando...';
+      toast.style.display = 'none';
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+          body: JSON.stringify({ email, password: senha })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          toastMsg.textContent = 'E-mail ou senha incorretos.';
+          toast.style.display = 'flex';
+          return;
+        }
+
+        sessionStorage.setItem('sb_access_token', data.access_token);
+        sessionStorage.setItem('sb_user', JSON.stringify(data.user));
+
+        document.getElementById('user-email').textContent = data.user.email || '';
+        mostrarTela('tela-lista');
+        carregarClientes(data.access_token);
+
+      } catch (err) {
+        toastMsg.textContent = 'Erro ao conectar. Tente novamente.';
+        toast.style.display = 'flex';
+      } finally {
+        btn.disabled = false;
+        spin.style.display = 'none';
+        texto.textContent = 'Entrar';
+      }
+    });
+
+    // ── LOGOUT ──
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      sessionStorage.removeItem('sb_access_token');
+      sessionStorage.removeItem('sb_user');
+      document.getElementById('email').value = '';
+      document.getElementById('senha').value = '';
+      mostrarTela('tela-login');
+    });
+
+    // ── CARREGAR CLIENTES ──
+    async function carregarClientes(accessToken) {
+      const tabelaBody = document.getElementById('tabela-body');
+      const counter    = document.getElementById('counter');
+
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/clientes?select=nome,email,telefone,created_at&order=created_at.desc`,
+          {
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${accessToken}`
+            }
+          }
+        );
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        if (!data || data.length === 0) {
+          tabelaBody.innerHTML = `
+            <tr><td colspan="4">
+              <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <p>Nenhum cliente cadastrado ainda</p>
+              </div>
+            </td></tr>`;
+          return;
+        }
+
+        counter.textContent = `${data.length} cliente${data.length !== 1 ? 's' : ''}`;
+        counter.style.display = 'inline-block';
+
+        tabelaBody.innerHTML = data.map((c, i) => `
+          <tr style="animation: rowIn 0.4s ease ${i * 0.06}s both;">
+            <td>
+              <div class="name-cell">
+                <div class="avatar">${c.nome ? c.nome.charAt(0).toUpperCase() : '?'}</div>
+                ${c.nome ?? '—'}
+              </div>
+            </td>
+            <td class="email-cell">${c.email ?? '—'}</td>
+            <td>${c.telefone ?? '—'}</td>
+            <td class="date-cell">${c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—'}</td>
+          </tr>
+        `).join('');
+
+      } catch (err) {
+        tabelaBody.innerHTML = `
+          <tr><td colspan="4" class="error-state">Erro ao carregar: ${err.message}</td></tr>`;
+      }
+    }
+  </script>
+</body>
+</html>
